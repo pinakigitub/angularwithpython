@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
     .toPromise()
     .then(y => {
       this.getUserInfo();
-      this.isLoading = !this.isLoading;
+    
     });
   }
 }

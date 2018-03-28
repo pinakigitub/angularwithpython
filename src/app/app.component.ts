@@ -14,8 +14,9 @@ export class AppComponent implements OnInit {
   isLoading: boolean = false;
   iteemToupdate:any={};
   studentlist: any = [];
+  userDetails:any={};
  
-  public popoverTitle: string = 'Afre you sure want to delete ?';
+  public popoverTitle: string = 'Are you sure want to delete ?';
   public popoverMessage: string = 'item will be permanently deleted.';
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
@@ -56,6 +57,10 @@ export class AppComponent implements OnInit {
         this.getUserInfo();
         this.isLoading = !this.isLoading;
         jQuery("#EditModal").modal("hide");
+      },x=>{
+        jQuery("#EditModal").modal("hide");
+        this.isLoading = !this.isLoading;
+        jQuery("#loginModal").modal("show");
       });
   }
   public confirm(id)
@@ -70,6 +75,26 @@ export class AppComponent implements OnInit {
     .then(y => {
       this.getUserInfo();
     
+    },x=>{
+      jQuery("#loginModal").modal("show");
     });
+  }
+  public login()
+  {
+
+  }
+  public validate()
+  {
+    this.isLoading = !this.isLoading;
+    this._httpClient.post(this._sref.API_ENDPOINT() + 'validateUser',this.userDetails)
+      .toPromise()
+      .then(y => {
+        this.isLoading = !this.isLoading;
+       console.log(y.json())
+       localStorage.setItem("token",y.json().access_token)
+       jQuery("#loginModal").modal("hide");
+      },x=>{
+        console.log('error')
+      });
   }
 }

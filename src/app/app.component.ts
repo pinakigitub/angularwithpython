@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpServiceService } from './common/http-service.service';
 import { GlobalConstantsServiceService } from './common/global-constants-service.service';
 
+
 declare var jQuery: any;
 @Component({
   selector: 'app-root',
@@ -10,8 +11,15 @@ declare var jQuery: any;
 })
 export class AppComponent implements OnInit {
   title = 'app';
+  isLoading: boolean = false;
   iteemToupdate:any={};
   studentlist: any = [];
+ 
+  public popoverTitle: string = 'Afre you sure want to delete ?';
+  public popoverMessage: string = 'item will be permanently deleted.';
+  public confirmClicked: boolean = false;
+  public cancelClicked: boolean = false;
+
   constructor(private _sref: GlobalConstantsServiceService,
     private _httpClient: HttpServiceService) {
   }
@@ -35,6 +43,7 @@ export class AppComponent implements OnInit {
     this.iteemToupdate={};
   }
   public savetoDb(){
+    this.isLoading = !this.isLoading;
     if(this.iteemToupdate._id!=undefined)
     {
       let id_temp=this.iteemToupdate._id.$oid;
@@ -45,15 +54,22 @@ export class AppComponent implements OnInit {
       .toPromise()
       .then(y => {
         this.getUserInfo();
+        this.isLoading = !this.isLoading;
         jQuery("#EditModal").modal("hide");
       });
   }
+  public confirm(id)
+  {
+   this.delete(id);
+  }
   public delete(id)
   {
+  
     this._httpClient.get(this._sref.API_ENDPOINT() + 'deleteStudetDetail?_id='+id)
     .toPromise()
     .then(y => {
       this.getUserInfo();
+      this.isLoading = !this.isLoading;
     });
   }
 }
